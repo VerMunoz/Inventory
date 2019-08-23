@@ -1,15 +1,42 @@
-=== INVENTARIO DE INFRAESTRUCTURA ===
- Hostname: customer-187-174-218-184.uninet-ide.com.mx
- Plataform: Linux
- OS Level: 4.18.19-100.fc27.x86_64
- OS Model: Fedora 27 (Workstation Edition)
- System Model: ASUSTeK Computer Inc.
- Proccessors:4
- Clock: 1184.755 MHz
- Memory: 7939704 KB
- Swap: 8077308 KB
- ACX:40:
- Interfaces:
+======= INVENTARIO DE INFRAESTRUCTURA =======
+OPERATING SYSTEM
+  Plataform: Linux
+  Kernel: 4.18.19-100.fc27.x86_64
+  OS Model: Fedora 27 (Workstation Edition)
+
+HARDWARE
+  Hostname: customer-187-174-218-184.uninet-ide.com.mx
+  System Model: ASUSTeK Computer Inc.
+  Proccesor Type: Intel(R) Core(TM) i3-2310M CPU @ 2.10GHz
+  Proccessors:4
+  Clock: 867.707 MHz
+  Memory total: 7.6G GB
+  Memory used: 4.3G
+  Memory available: 1.9G
+  Swap total: 7.7G 
+  Swap free: 7.6G
+
+STORAGE
+ 	/dev/mapper/fedora-root
+		Size:49GGB
+		Used:32GGB
+		Porcentaje de uso:68
+		Mount:/
+
+	/dev/sda1
+		Size:976MGB
+		Used:213MGB
+		Porcentaje de uso:24
+		Mount:/boot
+
+	/dev/mapper/fedora-home
+		Size:400GGB
+		Used:37GGB
+		Porcentaje de uso:10
+		Mount:/home
+
+NETWORK
+  Interfaces:
 	docker0
 		* Versión 4
 		IP_docker0=172.17.0.1
