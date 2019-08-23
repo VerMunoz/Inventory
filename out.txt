@@ -1,0 +1,62 @@
+=== INVENTARIO DE INFRAESTRUCTURA ===
+ Hostname: customer-187-174-218-184.uninet-ide.com.mx
+ Plataform: Linux
+ OS Level: 4.18.19-100.fc27.x86_64
+ OS Model: Fedora 27 (Workstation Edition)
+ System Model: ASUSTeK Computer Inc.
+ Proccessors:4
+ Clock: 1184.755 MHz
+ Memory: 7939704 KB
+ Swap: 8077308 KB
+ ACX:40:
+ Interfaces:
+	docker0
+		* Versión 4
+		IP_docker0=172.17.0.1
+		NETMASK_docker0=255.255.0.0
+		BROADCATS_docker0=172.17.255.255
+		* Versión 6
+		IP_docker0=fe80::42:b9ff:fea9:6b3
+		NETMASK_docker0=64
+		BROADCATS_docker0=0x20<link>
+
+	enp3s0
+		* Versión 4
+		IP_enp3s0=192.168.21.12
+		NETMASK_enp3s0=255.255.252.0
+		BROADCATS_enp3s0=192.168.23.255
+		* Versión 6
+		IP_enp3s0=fe80::8d27:f089:67db:c916
+		NETMASK_enp3s0=64
+		BROADCATS_enp3s0=0x20<link>
+
+	lo
+		* Versión 4
+		IP_lo=127.0.0.1
+		NETMASK_lo=255.0.0.0
+		BROADCATS_lo=
+		* Versión 6
+		IP_lo=::1
+		NETMASK_lo=128
+		BROADCATS_lo=0x10<host>
+
+	vpn_se
+		* Versión 4
+		IP_vpn_se=172.16.10.119
+		NETMASK_vpn_se=255.255.255.0
+		BROADCATS_vpn_se=172.16.10.255
+		* Versión 6
+		IP_vpn_se=fe80::5cc9:94ff:fe2c:14b0
+		NETMASK_vpn_se=64
+		BROADCATS_vpn_se=0x20<link>
+
+	wlp2s0
+		* Versión 4
+		IP_wlp2s0=192.168.23.147
+		NETMASK_wlp2s0=255.255.252.0
+		BROADCATS_wlp2s0=192.168.23.255
+		* Versión 6
+		IP_wlp2s0=fe80::3374:28fe:aa66:ff22
+		NETMASK_wlp2s0=64
+		BROADCATS_wlp2s0=0x20<link>
+
