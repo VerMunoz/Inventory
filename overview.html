@@ -1,0 +1,4013 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Ansible Overview</title>
+    <style type="text/css">
+      /* reset.css */
+      html, body, div, span, applet, object, iframe,
+      h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+      a, abbr, acronym, address, big, cite, code,
+      del, dfn, em, img, ins, kbd, q, s, samp,
+      small, strike, strong, sub, sup, tt, var,
+      b, u, i, center,
+      dl, dt, dd, ol, ul, li,
+      fieldset, form, label, legend,
+      table, caption, tbody, tfoot, thead, tr, th, td,
+      article, aside, canvas, details, embed,
+      figure, figcaption, footer, header, hgroup,
+      menu, nav, output, ruby, section, summary,
+      time, mark, audio, video {
+        margin: 0; padding: 0; border: 0; font-size: 100%; font: inherit; vertical-align: baseline;
+      }
+      /* HTML5 display-role reset for older browsers */
+      article, aside, details, figcaption, figure,
+      footer, header, hgroup, menu, nav, section { display: block; }
+      body { line-height: 1; }
+      ol, ul { list-style: none; }
+      blockquote, q { quotes: none; }
+      blockquote:before, blockquote:after,
+      q:before, q:after { content: ''; content: none; }
+      table { border-collapse: collapse; border-spacing: 0; }
+
+      /* ansible-cmdb */
+      *, body { font-family: sans-serif; font-weight: lighter; }
+      a { text-decoration: none; }
+      b { font-weight: bold; }
+      p { margin-bottom: 1em; }
+
+      header { position: fixed; top: 0px; left: 0px; right: 0px; background-color: #0071b8; overflow: auto; color: #E0E0E0; padding: 15px; z-index: 1000; }
+      header h1 { font-size: x-large; float: left; line-height: 32px; font-weight: bold; }
+      header #clear_settings { float: right; line-height: 32px; font-size: small; margin-left: 12px; }
+      header #clear_settings a { color: #FFFFFF; font-weight: bold; padding: 6px; background-color: #0090F0; box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.15); }
+      header #generated { float: right; line-height: 32px; font-size: small; }
+      header #top { display: none; }
+      header #top a { line-height: 32px; margin-left: 64px; color: #FFFFFF; border-bottom: 1px solid #909090; }
+      header #generated .detail { font-weight: bold; }
+
+      footer { display: block; position: fixed; bottom: 0px; right: 0px; left: 0px; background-color: #d5d5d5; overflow: auto; color: #505050; padding: 4px; font-size: x-small; text-align: right; padding-right: 8px; }
+      footer a { font-weight: bold; text-decoration: none; color: #202020; }
+
+      #col_toggles { margin: 32px; margin-top: 100px; }
+      #col_toggles h2 { display: block; font-size: 1.4em; margin-bottom: 32px; color: #606060; }
+      #col_toggle_buttons { margin-left: 32px; font-weight: normal; line-height: 40px; }
+      #col_toggles a { line-height: 40px; }
+      #col_toggles a { display: inline-block; background-color: #009688; line-height: 32px; padding: 0px 15px 0px 15px; margin-right: 6px; box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.35); color: #FFFFFF; }
+      #col_toggles a.col-invisible { background-color: #B0B0B0; box-shadow: 0 0px 0px 0; }
+
+      #host_overview { margin: 32px; }
+      #host_overview h2 { display: block; font-size: 1.4em; color: #606060; }
+      #host_overview_tbl_wrapper{ margin-left: 16px; }
+      #host_overview table { width: 100%; clear: both; }
+      #host_overview tr { border-bottom: 1px solid #F0F0F0; }
+      #host_overview tr:hover { background-color: #F0F0F0; }
+      #host_overview thead th { text-align: left; color: #707070; padding: 16px 0px 8px 16px; border-bottom: 1px solid #C0C0C0; font-weight: bold; cursor: pointer; background-repeat: no-repeat; background-position: center right; background-image: url("https://cdn.datatables.net/1.10.2//images/sort_both.png"); }
+      #host_overview thead th.sorting_desc { background-image: url("https://cdn.datatables.net/1.10.2//images/sort_desc.png"); }
+      #host_overview thead th.sorting_asc { background-image: url("https://cdn.datatables.net/1.10.2//images/sort_asc.png"); }
+      #host_overview tbody td { color: #000000; padding: 8px 12px 8px 12px; }
+      #host_overview tbody a { text-decoration: none; color: #005c9d; }
+      #host_overview_tbl_filter { float: right; color: #808080; padding-bottom: 32px; }
+      #host_overview_tbl_filter label input { margin-left: 12px; }
+      #host_overview_tbl_filter #filter_link a { color: #000000; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAoUlEQVR4Xu2TIQ6EMBBF/+4dOUBFBYoboBHoBsuRUCgcnpDg3/Y7ICQVK3ebvPxJ30xH9QXom/PO/PoDAjSOY8pwIwFFr2EYUobjONj33bjGd3Ylr77v2bYNp7Hwhifs3HOeUdu2LMuCE1DXdedtl612cJ1R0zRM04TT1HVNjPERO/ecZxRCSBnmeWZdV+Ma39mVvABVVZUy3EhA0f//gvQB4y08WIiD/goAAAAASUVORK5CYII=) no-repeat left center; padding: 5px 0 5px 25px; }
+      #host_overview_tbl_info { margin-top: 16px; color: #C0C0C0; }
+      #host_overview .bar { clear: both; margin-bottom: 1px; }
+      #host_overview .prog_bar_full { float: left; display: block; height: 12px; border: 1px solid #000000; padding: 1px; margin-right: 4px; color: white; text-align: center; }
+      #host_overview .prog_bar_used { display: block; height: 12px; background-color: #8F4040; }
+      #host_overview tbody td.error a { color: #FF0000; }
+      #host_overview span.usage_detail { color: #606060; }
+      #host_overview .error { color: #FF0000; }
+
+      #hosts { margin-left: 32px; margin-bottom: 120px; }
+      #hosts .toggle-collapse { cursor: pointer; }
+      #hosts a.toggle-all { margin-top: 20px; display: inline-block; color: #0080FF; }
+      #hosts a { color: #005c9d; }
+      #hosts h3.collapsed::before { color: #505050; margin-right: 16px; content: "⊞";  font-weight: 200; font-size: large; }
+      #hosts h3.uncollapsed::before { color: #505050; margin-right: 16px; content: "⊟";  font-weight: 200; font-size: large;}
+      #hosts h4.collapsed::before { color: #505050; margin-right: 16px; content: "⊞";  font-weight: 200; font-size: large;}
+      #hosts h4.uncollapsed::before { color: #505050; margin-right: 16px; content: "⊟"; font-weight: 200; font-size: large;}
+      #hosts div.collapsable { margin-left: 16px; }
+      #hosts div.collapsed { display: none; }
+      #hosts h3.uncollapsed { line-height: 1.5em; font-size: xx-large; border-bottom: 1px solid #D0D0D0; }
+      #hosts h3.collapsed {  line-height: 1.5em; font-size: xx-large; }
+      #hosts h4 { font-size: large; font-weight: bold; color: #404040; margin-top: 32px; margin-bottom: 32px; }
+      #hosts th { text-align: left; color: #808080; padding-bottom: 10px; }
+      #hosts td { padding-left: 16px; color: #303030; padding-bottom: 10px; }
+      #hosts ul { list-style: square; margin-left: 48px; }
+      #hosts table.net_overview td, #hosts table.net_overview th { text-align: left; padding: 0px 0px 8px 16px; margin: 0px; }
+      #hosts table.net_overview { margin: 16px 0px 16px 0px; }
+      #hosts .error { color: #FF0000; }
+    </style>
+    <!-- DataTables assets -->
+      <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.2//js/jquery.dataTables.js"></script>
+  </head>
+  <body>
+
+
+  <header>
+    <h1>Host overview</h1>
+    <span id="top"><a href="#">Back to top</a></span>
+    <span id="clear_settings"><a href="javascript:window.localStorage.clear('columnVisibility'); location.reload();" title="If things are acting weird, press this button">Clear settings</a></span> 
+    <span id="generated">Generated on <span class="detail">Mon Aug 26 18:17:29 2019</span> by <span class="detail">vmunoz</span> @ <span class="detail">localhost.localdomain</span></span>
+  </header>
+
+
+  <div id="col_toggles">
+    <h2>Shown columns</h2>
+    <div id="col_toggle_buttons">
+        
+        <a href="" class="col-toggle col-visible" data-column="0" data-column-id="name">Name</a>
+        
+        <a href="" class="col-toggle col-invisible" data-column="1" data-column-id="groups">Groups</a>
+        
+        <a href="" class="col-toggle col-invisible" data-column="2" data-column-id="cust">Cust</a>
+        
+        <a href="" class="col-toggle col-invisible" data-column="3" data-column-id="dtap">DTAP</a>
+        
+        <a href="" class="col-toggle col-invisible" data-column="4" data-column-id="comment">Comment</a>
+        
+        <a href="" class="col-toggle col-invisible" data-column="5" data-column-id="ext_id">Ext ID</a>
+        
+        <a href="" class="col-toggle col-visible" data-column="6" data-column-id="fqdn">FQDN</a>
+        
+        <a href="" class="col-toggle col-visible" data-column="7" data-column-id="main_ip">Main IP</a>
+        
+        <a href="" class="col-toggle col-invisible" data-column="8" data-column-id="all_ipv4">All IPv4</a>
+        
+        <a href="" class="col-toggle col-invisible" data-column="9" data-column-id="all_ipv6">All IPv6</a>
+        
+        <a href="" class="col-toggle col-visible" data-column="10" data-column-id="os">OS</a>
+        
+        <a href="" class="col-toggle col-invisible" data-column="11" data-column-id="kernel">Kernel</a>
+        
+        <a href="" class="col-toggle col-invisible" data-column="12" data-column-id="arch">Arch</a>
+        
+        <a href="" class="col-toggle col-visible" data-column="13" data-column-id="virt">Virt</a>
+        
+        <a href="" class="col-toggle col-invisible" data-column="14" data-column-id="cpu_type">CPU type</a>
+        
+        <a href="" class="col-toggle col-visible" data-column="15" data-column-id="vcpus">vCPUs</a>
+        
+        <a href="" class="col-toggle col-visible" data-column="16" data-column-id="ram">RAM [GiB]</a>
+        
+        <a href="" class="col-toggle col-invisible" data-column="17" data-column-id="mem_usage">Mem Usage</a>
+        
+        <a href="" class="col-toggle col-invisible" data-column="18" data-column-id="swap_usage">Swap Usage</a>
+        
+        <a href="" class="col-toggle col-invisible" data-column="19" data-column-id="disk_usage">Disk usage</a>
+        
+        <a href="" class="col-toggle col-invisible" data-column="20" data-column-id="physdisk_size">PhysDisk size</a>
+        
+        <a href="" class="col-toggle col-invisible" data-column="21" data-column-id="nr_of_ifaces">Nr of Ifaces</a>
+        
+        <a href="" class="col-toggle col-invisible" data-column="22" data-column-id="timestamp">Timestamp</a>
+        
+        <a href="" class="col-toggle col-invisible" data-column="23" data-column-id="prodname">Product Name</a>
+        
+        <a href="" class="col-toggle col-invisible" data-column="24" data-column-id="prodserial">Product Serial</a>
+    </div>
+  </div>
+
+
+  <div id="host_overview">
+    <h2>Host overview</h2>
+    <div id="host_overview_tbl_wrapper">
+      <table id="host_overview_tbl" class="demo display dataTable compact">
+      <thead>
+        <tr>
+            <th>Name</th>
+            <th>Groups</th>
+            <th>Cust</th>
+            <th>DTAP</th>
+            <th>Comment</th>
+            <th>Ext ID</th>
+            <th>FQDN</th>
+            <th>Main IP</th>
+            <th>All IPv4</th>
+            <th>All IPv6</th>
+            <th>OS</th>
+            <th>Kernel</th>
+            <th>Arch</th>
+            <th>Virt</th>
+            <th>CPU type</th>
+            <th>vCPUs</th>
+            <th>RAM [GiB]</th>
+            <th>Mem Usage</th>
+            <th>Swap Usage</th>
+            <th>Disk usage</th>
+            <th>PhysDisk size</th>
+            <th>Nr of Ifaces</th>
+            <th>Timestamp</th>
+            <th>Product Name</th>
+            <th>Product Serial</th>
+        </tr>
+      </thead>
+      <tbody>
+          
+            <tr>                  <td>
+  
+    <a href="#Solaris" class="">Solaris</a>
+</td>                  <td>
+  
+</td>                  <td>
+  
+</td>                  <td>
+  
+</td>                  <td>
+  
+</td>                  <td>
+  
+</td>                  <td>
+  ithelk1.telcel.com
+</td>                  <td>
+  
+  10.191.106.245
+</td>                  <td>
+  
+  10.191.106.245
+</td>                  <td>
+  
+</td>                  <td>
+    Solaris 10
+</td>                  <td>
+  5.10
+</td>                  <td>
+  sun4v / 
+</td>                  <td>
+  ? / ?
+</td>                  <td>
+  
+    <a href="http://www.cpubenchmark.net/cpu.php?cpu=SPARC-T4 @ 2848MHz">SPARC-T4 @ 2848MHz</a>
+</td>                  <td>
+    24
+</td>                  <td>
+  64.0
+</td>                  <td>
+        n/a
+</td>                  <td>
+        n/a
+</td>                  <td>
+      
+      <span style="display:none">0.465680</span>
+      <div class="bar">
+        <span class="prog_bar_full" style="width:100px">
+          <span class="prog_bar_used" style="width:46.5680103165px"></span>
+        </span> / <span class="usage_detail">(14.9 / 31.9 GiB)</span>
+      </div>
+      
+      <span style="display:none">0.465680</span>
+      <div class="bar">
+        <span class="prog_bar_full" style="width:100px">
+          <span class="prog_bar_used" style="width:46.5680103165px"></span>
+        </span> /dev <span class="usage_detail">(14.9 / 31.9 GiB)</span>
+      </div>
+      
+      <span style="display:none">0.158392</span>
+      <div class="bar">
+        <span class="prog_bar_full" style="width:100px">
+          <span class="prog_bar_used" style="width:15.8392329549px"></span>
+        </span> /elasticsearch <span class="usage_detail">(54.5 / 344.0 GiB)</span>
+      </div>
+      
+      <span style="display:none">0.010049</span>
+      <div class="bar">
+        <span class="prog_bar_full" style="width:100px">
+          <span class="prog_bar_used" style="width:1.0048866272px"></span>
+        </span> /kibana <span class="usage_detail">(0.1 / 8.0 GiB)</span>
+      </div>
+      
+      <span style="display:none">0.314801</span>
+      <div class="bar">
+        <span class="prog_bar_full" style="width:100px">
+          <span class="prog_bar_used" style="width:31.4800739288px"></span>
+        </span> /logstash <span class="usage_detail">(5.0 / 16.0 GiB)</span>
+      </div>
+      
+      <span style="display:none">0.152702</span>
+      <div class="bar">
+        <span class="prog_bar_full" style="width:100px">
+          <span class="prog_bar_used" style="width:15.2702331543px"></span>
+        </span> /oraema <span class="usage_detail">(1.2 / 8.0 GiB)</span>
+      </div>
+      
+      <span style="display:none">0.153246</span>
+      <div class="bar">
+        <span class="prog_bar_full" style="width:100px">
+          <span class="prog_bar_used" style="width:15.3245925903px"></span>
+        </span> /rutinas <span class="usage_detail">(1.2 / 8.0 GiB)</span>
+      </div>
+      
+      <span style="display:none">0</span>
+      <div class="bar">
+        <span class="prog_bar_full" style="width:100px">
+          <span class="prog_bar_used" style="width:0px"></span>
+        </span> /proc <span class="usage_detail">(0 / 0 GiB)</span>
+      </div>
+      
+      <span style="display:none">0</span>
+      <div class="bar">
+        <span class="prog_bar_full" style="width:100px">
+          <span class="prog_bar_used" style="width:0px"></span>
+        </span> /system/contract <span class="usage_detail">(0 / 0 GiB)</span>
+      </div>
+      
+      <span style="display:none">0</span>
+      <div class="bar">
+        <span class="prog_bar_full" style="width:100px">
+          <span class="prog_bar_used" style="width:0px"></span>
+        </span> /etc/mnttab <span class="usage_detail">(0 / 0 GiB)</span>
+      </div>
+      
+      <span style="display:none">0</span>
+      <div class="bar">
+        <span class="prog_bar_full" style="width:100px">
+          <span class="prog_bar_used" style="width:0px"></span>
+        </span> /system/object <span class="usage_detail">(0 / 0 GiB)</span>
+      </div>
+      
+      <span style="display:none">0.580623</span>
+      <div class="bar">
+        <span class="prog_bar_full" style="width:100px">
+          <span class="prog_bar_used" style="width:58.0622673035px"></span>
+        </span> /etc/svc/volatile <span class="usage_detail">(18.6 / 32.0 GiB)</span>
+      </div>
+      
+      <span style="display:none">0.465680</span>
+      <div class="bar">
+        <span class="prog_bar_full" style="width:100px">
+          <span class="prog_bar_used" style="width:46.5680103165px"></span>
+        </span> /platform/sun4v/lib/libc_psr.so.1 <span class="usage_detail">(14.9 / 31.9 GiB)</span>
+      </div>
+      
+      <span style="display:none">0.465680</span>
+      <div class="bar">
+        <span class="prog_bar_full" style="width:100px">
+          <span class="prog_bar_used" style="width:46.5680103165px"></span>
+        </span> /platform/sun4v/lib/sparcv9/libc_psr.so.1 <span class="usage_detail">(14.9 / 31.9 GiB)</span>
+      </div>
+      
+      <span style="display:none">0</span>
+      <div class="bar">
+        <span class="prog_bar_full" style="width:100px">
+          <span class="prog_bar_used" style="width:0px"></span>
+        </span> /dev/fd <span class="usage_detail">(0 / 0 GiB)</span>
+      </div>
+      
+      <span style="display:none">0.580623</span>
+      <div class="bar">
+        <span class="prog_bar_full" style="width:100px">
+          <span class="prog_bar_used" style="width:58.0622673035px"></span>
+        </span> /tmp <span class="usage_detail">(18.6 / 32.0 GiB)</span>
+      </div>
+      
+      <span style="display:none">0.580623</span>
+      <div class="bar">
+        <span class="prog_bar_full" style="width:100px">
+          <span class="prog_bar_used" style="width:58.0622673035px"></span>
+        </span> /var/run <span class="usage_detail">(18.6 / 32.0 GiB)</span>
+      </div>
+      
+      <span style="display:none">0</span>
+      <div class="bar">
+        <span class="prog_bar_full" style="width:100px">
+          <span class="prog_bar_used" style="width:0px"></span>
+        </span> /net <span class="usage_detail">(0 / 0 GiB)</span>
+      </div>
+      
+      <span style="display:none">0</span>
+      <div class="bar">
+        <span class="prog_bar_full" style="width:100px">
+          <span class="prog_bar_used" style="width:0px"></span>
+        </span> /home <span class="usage_detail">(0 / 0 GiB)</span>
+      </div>
+</td>                  <td>
+      sd4: 0.00 Bytes<br />
+      sd5: 0.00 Bytes<br />
+      sd6: 558.91 GB<br />
+      sd7: 558.91 GB<br />
+      sd8: 558.91 GB<br />
+      sd9: 558.91 GB<br />
+</td>                  <td>
+  2
+</td>                  <td>
+  2019-08-26T23:17:07Z
+</td>                  <td>
+  
+</td>                  <td>
+  
+</td>            </tr>
+      </tbody>
+      </table>
+    </div>
+  </div>
+
+  
+  <div id="hosts">
+      
+      
+  
+    <a name="Solaris"></a>
+    <h3 class="toggle-collapse uncollapsed" id="Solaris" data-host-name="Solaris">Solaris</h3>
+    <div class="collapsable uncollapsed">
+      <a class="toggle-all" href="">Close all</a>
+        
+  <h4 class="toggle-collapse uncollapsed">General</h4>
+  <div class="collapsable uncollapsed">
+  <table>
+    <tr><th>Node name</th><td>ithelk1</td></tr>
+    <tr><th>Form factor</th><td></td></tr>
+    <tr><th>Virtualization role</th><td></td></tr>
+    <tr><th>Virtualization type</th><td></td></tr>
+  </table>
+  </div>
+
+        
+
+        
+
+        
+
+        
+  
+
+        
+
+        
+  <h4 class="toggle-collapse uncollapsed">Hardware</h4>
+  <div class="collapsable uncollapsed">
+  <table>
+    <tr><th>Vendor</th><td></td></tr>
+    <tr><th>Product name</th><td></td></tr>
+    <tr><th>Product serial</th><td></td></tr>
+    <tr><th>Architecture</th><td>sun4v</td></tr>
+    <tr><th>Form factor</th><td></td></tr>
+    <tr><th>Virtualization role</th><td></td></tr>
+    <tr><th>Virtualization type</th><td></td></tr>
+    <tr><th>Machine</th><td>sun4v</td></tr>
+    <tr><th>Processor type</th><td><a href="http://www.cpubenchmark.net/cpu.php?cpu=SPARC-T4 @ 2848MHz">SPARC-T4 @ 2848MHz</a></td></tr>
+    <tr><th>Processor count</th><td>2</td></tr>
+    <tr><th>Processor cores</th><td>24</td></tr>
+    <tr><th>Processor threads per core</th><td></td></tr>
+    <tr><th>Processor virtual CPUs</th><td></td></tr>
+    <tr><th>Mem total mb</th><td>65536</td></tr>
+    <tr><th>Mem free mb</th><td></td></tr>
+    <tr><th>Swap total mb</th><td>32768</td></tr>
+    <tr><th>Swap free mb</th><td>13741</td></tr>
+  </table>
+  </div>
+
+        
+  <h4 class="toggle-collapse uncollapsed">Operating System</h4>
+  <div class="collapsable uncollapsed">
+  <table>
+    <tr><th>System</th><td>SunOS</td></tr>
+    <tr><th>OS Family</th><td>Solaris</td></tr>
+    <tr><th>Distribution</th><td>Solaris</td></tr>
+    <tr><th>Distribution version</th><td>10</td></tr>
+    <tr><th>Distribution release</th><td>Oracle Solaris 10 8/11 s10s_u10wos_17b SPARC</td></tr>
+    <tr><th>Kernel</th><td>5.10</td></tr>
+    <tr><th>Userspace bits</th><td>32</td></tr>
+    <tr><th>Userspace_architecture</th><td></td></tr>
+    <tr><th>Date time</th><td>2019-08-26T23:17:07Z</td></tr>
+    <tr><th>Locale / Encoding</th><td>Unknown</td></tr>
+        <tr><th>SELinux</th><td>
+  
+  <table>
+      
+      <tr>
+        <th>
+                status
+        </th>
+        <td>
+              Missing selinux Python library
+        </td>
+      </tr>
+  </table>
+</td></tr>
+    <tr><th>Package manager</th><td>svr4pkg</td></tr>
+  </table>
+  </div>
+
+        
+  <h4 class="toggle-collapse uncollapsed">Network</h4>
+  <div class="collapsable uncollapsed">
+  <table class="net_info">
+    <tr><th>Hostname</th><td>ithelk1</td></tr>
+    <tr><th>Domain</th><td>telcel.com</td></tr>
+    <tr><th>FQDN</th><td>ithelk1.telcel.com</td></tr>
+    <tr><th>All IPv4</th><td>10.191.106.245</td></tr>
+    <tr><th>All IPv6</th><td></td></tr>
+  </table>
+    <table class="net_overview">
+      <tr>
+        <th>IPv4 Networks</th>
+        <td>
+          <table class="net_overview">
+            <tr>
+              <th>dev</th>
+              <th>address</th>
+              <th>network</th>
+              <th>netmask</th>
+            </tr>
+              
+              
+          </table>
+        </td>
+      </tr>
+    </table>
+
+  
+    <table class="net_iface_details">
+      <tr>
+        <th>Interface details</th>
+        <td>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+        
+  <h4 class="toggle-collapse uncollapsed">Storage</h4>
+  <div class="collapsable uncollapsed">
+  <table>
+    <tr>
+      <th>Devices</th>
+      <td>
+          
+  
+  <table>
+      
+      <tr>
+        <th>
+                sd4
+        </th>
+        <td>
+              
+  
+  <table>
+      
+      <tr>
+        <th>
+                product
+        </th>
+        <td>
+              Virtual CDROM   Revision
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                vendor
+        </th>
+        <td>
+              AMI
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                revision
+        </th>
+        <td>
+              1.00
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                hard_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                soft_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                media_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                transport_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                serial
+        </th>
+        <td>
+              
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                illegal_request
+        </th>
+        <td>
+              2
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                predictive_failure_analysis
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size
+        </th>
+        <td>
+              0.00 Bytes
+        </td>
+      </tr>
+  </table>
+
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                sd5
+        </th>
+        <td>
+              
+  
+  <table>
+      
+      <tr>
+        <th>
+                product
+        </th>
+        <td>
+              DV-W28SS-R      Revision
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                vendor
+        </th>
+        <td>
+              TEAC
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                revision
+        </th>
+        <td>
+              1.0C
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                hard_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                soft_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                media_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                transport_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                serial
+        </th>
+        <td>
+              
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                illegal_request
+        </th>
+        <td>
+              1
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                predictive_failure_analysis
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size
+        </th>
+        <td>
+              0.00 Bytes
+        </td>
+      </tr>
+  </table>
+
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                sd6
+        </th>
+        <td>
+              
+  
+  <table>
+      
+      <tr>
+        <th>
+                product
+        </th>
+        <td>
+              H106060SDSUN600GRevision
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                vendor
+        </th>
+        <td>
+              HITACHI
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                revision
+        </th>
+        <td>
+              A2B0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                hard_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                soft_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                media_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                transport_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                serial
+        </th>
+        <td>
+              1204PMZX9B
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                illegal_request
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                predictive_failure_analysis
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size
+        </th>
+        <td>
+              558.91 GB
+        </td>
+      </tr>
+  </table>
+
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                sd7
+        </th>
+        <td>
+              
+  
+  <table>
+      
+      <tr>
+        <th>
+                product
+        </th>
+        <td>
+              H106060SDSUN600GRevision
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                vendor
+        </th>
+        <td>
+              HITACHI
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                revision
+        </th>
+        <td>
+              A2B0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                hard_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                soft_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                media_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                transport_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                serial
+        </th>
+        <td>
+              1204PMRPAB
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                illegal_request
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                predictive_failure_analysis
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size
+        </th>
+        <td>
+              558.91 GB
+        </td>
+      </tr>
+  </table>
+
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                sd8
+        </th>
+        <td>
+              
+  
+  <table>
+      
+      <tr>
+        <th>
+                product
+        </th>
+        <td>
+              H106060SDSUN600GRevision
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                vendor
+        </th>
+        <td>
+              HITACHI
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                revision
+        </th>
+        <td>
+              A2B0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                hard_errors
+        </th>
+        <td>
+              156
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                soft_errors
+        </th>
+        <td>
+              7
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                media_errors
+        </th>
+        <td>
+              135
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                transport_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                serial
+        </th>
+        <td>
+              1204PG3WPB
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                illegal_request
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                predictive_failure_analysis
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size
+        </th>
+        <td>
+              558.91 GB
+        </td>
+      </tr>
+  </table>
+
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                sd9
+        </th>
+        <td>
+              
+  
+  <table>
+      
+      <tr>
+        <th>
+                product
+        </th>
+        <td>
+              H106060SDSUN600GRevision
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                vendor
+        </th>
+        <td>
+              HITACHI
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                revision
+        </th>
+        <td>
+              A2B0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                hard_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                soft_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                media_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                transport_errors
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                serial
+        </th>
+        <td>
+              1204PK8M6B
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                illegal_request
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                predictive_failure_analysis
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size
+        </th>
+        <td>
+              558.91 GB
+        </td>
+      </tr>
+  </table>
+
+        </td>
+      </tr>
+  </table>
+
+      </td>
+    </tr>
+    <tr>
+      <th>Mounts</th>
+      <td>
+        
+  
+      
+  
+  <table>
+      
+      <tr>
+        <th>
+                block_used
+        </th>
+        <td>
+              1947124
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_total
+        </th>
+        <td>
+              34252783616
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_total
+        </th>
+        <td>
+              4181248
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_available
+        </th>
+        <td>
+              562858
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_available
+        </th>
+        <td>
+              2234124
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_available
+        </th>
+        <td>
+              18301943808
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                fstype
+        </th>
+        <td>
+              vxfs
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_total
+        </th>
+        <td>
+              774016
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                mount
+        </th>
+        <td>
+              /
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                time
+        </th>
+        <td>
+              1534470897
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                device
+        </th>
+        <td>
+              /
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_used
+        </th>
+        <td>
+              211158
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_size
+        </th>
+        <td>
+              8192
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                options
+        </th>
+        <td>
+              rw,suid,delaylog,largefiles,qio,ioerror=mwdisable,xattr,dev=52c2ee0
+        </td>
+      </tr>
+  </table>
+
+      
+  
+  <table>
+      
+      <tr>
+        <th>
+                block_used
+        </th>
+        <td>
+              1947124
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_total
+        </th>
+        <td>
+              34252783616
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_total
+        </th>
+        <td>
+              4181248
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_available
+        </th>
+        <td>
+              562858
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_available
+        </th>
+        <td>
+              2234124
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_available
+        </th>
+        <td>
+              18301943808
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                fstype
+        </th>
+        <td>
+              lofs
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_total
+        </th>
+        <td>
+              774016
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                mount
+        </th>
+        <td>
+              /dev
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                time
+        </th>
+        <td>
+              1536610628
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                device
+        </th>
+        <td>
+              /dev
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_used
+        </th>
+        <td>
+              211158
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_size
+        </th>
+        <td>
+              8192
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                options
+        </th>
+        <td>
+              zonedevfs,dev=6100011
+        </td>
+      </tr>
+  </table>
+
+      
+  
+  <table>
+      
+      <tr>
+        <th>
+                block_used
+        </th>
+        <td>
+              7141715
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_total
+        </th>
+        <td>
+              369367187456
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_total
+        </th>
+        <td>
+              45088768
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_available
+        </th>
+        <td>
+              9560813
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_available
+        </th>
+        <td>
+              37947053
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_available
+        </th>
+        <td>
+              310862258176
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                fstype
+        </th>
+        <td>
+              vxfs
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_total
+        </th>
+        <td>
+              9660448
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                mount
+        </th>
+        <td>
+              /elasticsearch
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                time
+        </th>
+        <td>
+              1536610632
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                device
+        </th>
+        <td>
+              /elasticsearch
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_used
+        </th>
+        <td>
+              99635
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_size
+        </th>
+        <td>
+              8192
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                options
+        </th>
+        <td>
+              rw,suid,delaylog,largefiles,qio,ioerror=mwdisable,xattr,dev=52c2ee1
+        </td>
+      </tr>
+  </table>
+
+      
+  
+  <table>
+      
+      <tr>
+        <th>
+                block_used
+        </th>
+        <td>
+              10537
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_total
+        </th>
+        <td>
+              8589934592
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_total
+        </th>
+        <td>
+              1048576
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_available
+        </th>
+        <td>
+              261532
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_available
+        </th>
+        <td>
+              1038039
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_available
+        </th>
+        <td>
+              8503615488
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                fstype
+        </th>
+        <td>
+              vxfs
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_total
+        </th>
+        <td>
+              261536
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                mount
+        </th>
+        <td>
+              /kibana
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                time
+        </th>
+        <td>
+              1536610635
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                device
+        </th>
+        <td>
+              /kibana
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_used
+        </th>
+        <td>
+              4
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_size
+        </th>
+        <td>
+              8192
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                options
+        </th>
+        <td>
+              rw,suid,delaylog,largefiles,qio,ioerror=mwdisable,xattr,dev=52c2ee2
+        </td>
+      </tr>
+  </table>
+
+      
+  
+  <table>
+      
+      <tr>
+        <th>
+                block_used
+        </th>
+        <td>
+              660185
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_total
+        </th>
+        <td>
+              17179869184
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_total
+        </th>
+        <td>
+              2097152
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_available
+        </th>
+        <td>
+              554502
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_available
+        </th>
+        <td>
+              1436967
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_available
+        </th>
+        <td>
+              11771633664
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                fstype
+        </th>
+        <td>
+              vxfs
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_total
+        </th>
+        <td>
+              683008
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                mount
+        </th>
+        <td>
+              /logstash
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                time
+        </th>
+        <td>
+              1536610637
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                device
+        </th>
+        <td>
+              /logstash
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_used
+        </th>
+        <td>
+              128506
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_size
+        </th>
+        <td>
+              8192
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                options
+        </th>
+        <td>
+              rw,suid,delaylog,largefiles,qio,ioerror=mwdisable,xattr,dev=52c2ee5
+        </td>
+      </tr>
+  </table>
+
+      
+  
+  <table>
+      
+      <tr>
+        <th>
+                block_used
+        </th>
+        <td>
+              160120
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_total
+        </th>
+        <td>
+              8589934592
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_total
+        </th>
+        <td>
+              1048576
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_available
+        </th>
+        <td>
+              223833
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_available
+        </th>
+        <td>
+              888456
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_available
+        </th>
+        <td>
+              7278231552
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                fstype
+        </th>
+        <td>
+              vxfs
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_total
+        </th>
+        <td>
+              234880
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                mount
+        </th>
+        <td>
+              /oraema
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                time
+        </th>
+        <td>
+              1536610640
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                device
+        </th>
+        <td>
+              /oraema
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_used
+        </th>
+        <td>
+              11047
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_size
+        </th>
+        <td>
+              8192
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                options
+        </th>
+        <td>
+              rw,suid,delaylog,largefiles,qio,ioerror=mwdisable,xattr,dev=52c2ee4
+        </td>
+      </tr>
+  </table>
+
+      
+  
+  <table>
+      
+      <tr>
+        <th>
+                block_used
+        </th>
+        <td>
+              160690
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_total
+        </th>
+        <td>
+              8589934592
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_total
+        </th>
+        <td>
+              1048576
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_available
+        </th>
+        <td>
+              223712
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_available
+        </th>
+        <td>
+              887886
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_available
+        </th>
+        <td>
+              7273562112
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                fstype
+        </th>
+        <td>
+              vxfs
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_total
+        </th>
+        <td>
+              223744
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                mount
+        </th>
+        <td>
+              /rutinas
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                time
+        </th>
+        <td>
+              1536610642
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                device
+        </th>
+        <td>
+              /rutinas
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_used
+        </th>
+        <td>
+              32
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_size
+        </th>
+        <td>
+              8192
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                options
+        </th>
+        <td>
+              rw,suid,delaylog,largefiles,qio,ioerror=mwdisable,xattr,dev=52c2ee3
+        </td>
+      </tr>
+  </table>
+
+      
+  
+  <table>
+      
+      <tr>
+        <th>
+                block_used
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_total
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_total
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_available
+        </th>
+        <td>
+              49231
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_available
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_available
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                fstype
+        </th>
+        <td>
+              proc
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_total
+        </th>
+        <td>
+              50002
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                mount
+        </th>
+        <td>
+              /proc
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                time
+        </th>
+        <td>
+              1536610646
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                device
+        </th>
+        <td>
+              proc
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_used
+        </th>
+        <td>
+              771
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_size
+        </th>
+        <td>
+              512
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                options
+        </th>
+        <td>
+              nodevices,zone=ithelk1,dev=5ec0011
+        </td>
+      </tr>
+  </table>
+
+      
+  
+  <table>
+      
+      <tr>
+        <th>
+                block_used
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_total
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_total
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_available
+        </th>
+        <td>
+              2147483269
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_available
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_available
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                fstype
+        </th>
+        <td>
+              ctfs
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_total
+        </th>
+        <td>
+              378
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                mount
+        </th>
+        <td>
+              /system/contract
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                time
+        </th>
+        <td>
+              1536610646
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                device
+        </th>
+        <td>
+              ctfs
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_used
+        </th>
+        <td>
+              -2147482891
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_size
+        </th>
+        <td>
+              512
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                options
+        </th>
+        <td>
+              nodevices,zone=ithelk1,dev=5e80012
+        </td>
+      </tr>
+  </table>
+
+      
+  
+  <table>
+      
+      <tr>
+        <th>
+                block_used
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_total
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_total
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_available
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_available
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_available
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                fstype
+        </th>
+        <td>
+              mntfs
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_total
+        </th>
+        <td>
+              1
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                mount
+        </th>
+        <td>
+              /etc/mnttab
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                time
+        </th>
+        <td>
+              1536610646
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                device
+        </th>
+        <td>
+              mnttab
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_used
+        </th>
+        <td>
+              1
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_size
+        </th>
+        <td>
+              512
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                options
+        </th>
+        <td>
+              nodevices,zone=ithelk1,dev=5f00012
+        </td>
+      </tr>
+  </table>
+
+      
+  
+  <table>
+      
+      <tr>
+        <th>
+                block_used
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_total
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_total
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_available
+        </th>
+        <td>
+              2147483380
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_available
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_available
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                fstype
+        </th>
+        <td>
+              objfs
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_total
+        </th>
+        <td>
+              267
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                mount
+        </th>
+        <td>
+              /system/object
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                time
+        </th>
+        <td>
+              1536610646
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                device
+        </th>
+        <td>
+              objfs
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_used
+        </th>
+        <td>
+              -2147483113
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_size
+        </th>
+        <td>
+              512
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                options
+        </th>
+        <td>
+              nodevices,zone=ithelk1,dev=5f80012
+        </td>
+      </tr>
+  </table>
+
+      
+  
+  <table>
+      
+      <tr>
+        <th>
+                block_used
+        </th>
+        <td>
+              2435308
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_total
+        </th>
+        <td>
+              34359738368
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_total
+        </th>
+        <td>
+              4194304
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_available
+        </th>
+        <td>
+              76756724
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_available
+        </th>
+        <td>
+              1758996
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_available
+        </th>
+        <td>
+              14409695232
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                fstype
+        </th>
+        <td>
+              tmpfs
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_total
+        </th>
+        <td>
+              76764712
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                mount
+        </th>
+        <td>
+              /etc/svc/volatile
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                time
+        </th>
+        <td>
+              1536610646
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                device
+        </th>
+        <td>
+              swap
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_used
+        </th>
+        <td>
+              7988
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_size
+        </th>
+        <td>
+              8192
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                options
+        </th>
+        <td>
+              nodevices,xattr,zone=ithelk1,dev=5f40036
+        </td>
+      </tr>
+  </table>
+
+      
+  
+  <table>
+      
+      <tr>
+        <th>
+                block_used
+        </th>
+        <td>
+              1947124
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_total
+        </th>
+        <td>
+              34252783616
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_total
+        </th>
+        <td>
+              4181248
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_available
+        </th>
+        <td>
+              562858
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_available
+        </th>
+        <td>
+              2234124
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_available
+        </th>
+        <td>
+              18301943808
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                fstype
+        </th>
+        <td>
+              lofs
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_total
+        </th>
+        <td>
+              774016
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                mount
+        </th>
+        <td>
+              /platform/sun4v/lib/libc_psr.so.1
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                time
+        </th>
+        <td>
+              1536610659
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                device
+        </th>
+        <td>
+              /platform/sun4v/lib/libc_psr/libc_psr_hwcap3.so.1
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_used
+        </th>
+        <td>
+              211158
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_size
+        </th>
+        <td>
+              8192
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                options
+        </th>
+        <td>
+              zone=ithelk1,dev=52c2ee0
+        </td>
+      </tr>
+  </table>
+
+      
+  
+  <table>
+      
+      <tr>
+        <th>
+                block_used
+        </th>
+        <td>
+              1947124
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_total
+        </th>
+        <td>
+              34252783616
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_total
+        </th>
+        <td>
+              4181248
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_available
+        </th>
+        <td>
+              562858
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_available
+        </th>
+        <td>
+              2234124
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_available
+        </th>
+        <td>
+              18301943808
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                fstype
+        </th>
+        <td>
+              lofs
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_total
+        </th>
+        <td>
+              774016
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                mount
+        </th>
+        <td>
+              /platform/sun4v/lib/sparcv9/libc_psr.so.1
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                time
+        </th>
+        <td>
+              1536610660
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                device
+        </th>
+        <td>
+              /platform/sun4v/lib/sparcv9/libc_psr/libc_psr_hwcap3.so.1
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_used
+        </th>
+        <td>
+              211158
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_size
+        </th>
+        <td>
+              8192
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                options
+        </th>
+        <td>
+              zone=ithelk1,dev=52c2ee0
+        </td>
+      </tr>
+  </table>
+
+      
+  
+  <table>
+      
+      <tr>
+        <th>
+                block_used
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_total
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_total
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_available
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_available
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_available
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                fstype
+        </th>
+        <td>
+              fd
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_total
+        </th>
+        <td>
+              15
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                mount
+        </th>
+        <td>
+              /dev/fd
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                time
+        </th>
+        <td>
+              1536610660
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                device
+        </th>
+        <td>
+              fd
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_used
+        </th>
+        <td>
+              15
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_size
+        </th>
+        <td>
+              1024
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                options
+        </th>
+        <td>
+              rw,nodevices,zone=ithelk1,dev=6140012
+        </td>
+      </tr>
+  </table>
+
+      
+  
+  <table>
+      
+      <tr>
+        <th>
+                block_used
+        </th>
+        <td>
+              2435308
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_total
+        </th>
+        <td>
+              34359738368
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_total
+        </th>
+        <td>
+              4194304
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_available
+        </th>
+        <td>
+              76756724
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_available
+        </th>
+        <td>
+              1758996
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_available
+        </th>
+        <td>
+              14409695232
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                fstype
+        </th>
+        <td>
+              tmpfs
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_total
+        </th>
+        <td>
+              76764712
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                mount
+        </th>
+        <td>
+              /tmp
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                time
+        </th>
+        <td>
+              1536610661
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                device
+        </th>
+        <td>
+              swap
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_used
+        </th>
+        <td>
+              7988
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_size
+        </th>
+        <td>
+              8192
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                options
+        </th>
+        <td>
+              nodevices,xattr,zone=ithelk1,dev=5f40037
+        </td>
+      </tr>
+  </table>
+
+      
+  
+  <table>
+      
+      <tr>
+        <th>
+                block_used
+        </th>
+        <td>
+              2435308
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_total
+        </th>
+        <td>
+              34359738368
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_total
+        </th>
+        <td>
+              4194304
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_available
+        </th>
+        <td>
+              76756724
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_available
+        </th>
+        <td>
+              1758996
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_available
+        </th>
+        <td>
+              14409695232
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                fstype
+        </th>
+        <td>
+              tmpfs
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_total
+        </th>
+        <td>
+              76764712
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                mount
+        </th>
+        <td>
+              /var/run
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                time
+        </th>
+        <td>
+              1536610661
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                device
+        </th>
+        <td>
+              swap
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_used
+        </th>
+        <td>
+              7988
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_size
+        </th>
+        <td>
+              8192
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                options
+        </th>
+        <td>
+              nodevices,xattr,zone=ithelk1,dev=5f40038
+        </td>
+      </tr>
+  </table>
+
+      
+  
+  <table>
+      
+      <tr>
+        <th>
+                block_used
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_total
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_total
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_available
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_available
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_available
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                fstype
+        </th>
+        <td>
+              autofs
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_total
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                mount
+        </th>
+        <td>
+              /net
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                time
+        </th>
+        <td>
+              1536610673
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                device
+        </th>
+        <td>
+              -hosts
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_used
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_size
+        </th>
+        <td>
+              1024
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                options
+        </th>
+        <td>
+              nosuid,indirect,ignore,nobrowse,zone=ithelk1,dev=6200023
+        </td>
+      </tr>
+  </table>
+
+      
+  
+  <table>
+      
+      <tr>
+        <th>
+                block_used
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_total
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_total
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_available
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_available
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                size_available
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                fstype
+        </th>
+        <td>
+              autofs
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_total
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                mount
+        </th>
+        <td>
+              /home
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                time
+        </th>
+        <td>
+              1536610673
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                device
+        </th>
+        <td>
+              auto_home
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                inode_used
+        </th>
+        <td>
+              0
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                block_size
+        </th>
+        <td>
+              1024
+        </td>
+      </tr>
+      
+      <tr>
+        <th>
+                options
+        </th>
+        <td>
+              nodevices,indirect,ignore,nobrowse,zone=ithelk1,dev=6200024
+        </td>
+      </tr>
+  </table>
+
+
+      </td>
+    </tr>
+  </table>
+  </div>
+
+    </div>
+
+  </div>
+
+
+  <footer>
+    <p>Generated by <a href="https://github.com/fboender/ansible-cmdb">ansible-cmdb</a> v1.30 &dash; &copy; Ferry Boender 2017</p>
+  </footer>
+
+
+<script>
+$(document).ready( function () {
+  
+  function getQueryParams(qs) {
+    qs = qs.split('+').join(' ');
+    var params = {},
+      tokens,
+      re = /[?&]?([^=]+)=([^&]*)/g;
+    while (tokens = re.exec(qs)) {
+      params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+    }
+    return params;
+  }
+
+  // Get persisted column visibility from localStorage.
+  var columnVisibility = localStorage.getItem("columnVisibility");
+  if (columnVisibility == null) {
+    columnVisibility = {
+        "name": true,
+        "groups": false,
+        "cust": false,
+        "dtap": false,
+        "comment": false,
+        "ext_id": false,
+        "fqdn": true,
+        "main_ip": true,
+        "all_ipv4": false,
+        "all_ipv6": false,
+        "os": true,
+        "kernel": false,
+        "arch": false,
+        "virt": true,
+        "cpu_type": false,
+        "vcpus": true,
+        "ram": true,
+        "mem_usage": false,
+        "swap_usage": false,
+        "disk_usage": false,
+        "physdisk_size": false,
+        "nr_of_ifaces": false,
+        "timestamp": false,
+        "prodname": false,
+        "prodserial": false,
+    };
+    localStorage.setItem("columnVisibility", JSON.stringify(columnVisibility));
+  } else {
+    columnVisibility = JSON.parse(columnVisibility);
+  }
+
+  // Initialize the DataTables jQuery plugin on the host overview table
+  var table = $('#host_overview_tbl').DataTable({
+    paging: false,
+    columnDefs: [
+        {
+          "targets": [0],
+          "visible": true,
+          "sType": "string"
+        },
+        {
+          "targets": [1],
+          "visible": false,
+          "sType": "string"
+        },
+        {
+          "targets": [2],
+          "visible": false,
+          "sType": "string"
+        },
+        {
+          "targets": [3],
+          "visible": false,
+          "sType": "string"
+        },
+        {
+          "targets": [4],
+          "visible": false,
+          "sType": "string"
+        },
+        {
+          "targets": [5],
+          "visible": false,
+          "sType": "string"
+        },
+        {
+          "targets": [6],
+          "visible": true,
+          "sType": "string"
+        },
+        {
+          "targets": [7],
+          "visible": true,
+          "sType": "string"
+        },
+        {
+          "targets": [8],
+          "visible": false,
+          "sType": "string"
+        },
+        {
+          "targets": [9],
+          "visible": false,
+          "sType": "string"
+        },
+        {
+          "targets": [10],
+          "visible": true,
+          "sType": "string"
+        },
+        {
+          "targets": [11],
+          "visible": false,
+          "sType": "string"
+        },
+        {
+          "targets": [12],
+          "visible": false,
+          "sType": "string"
+        },
+        {
+          "targets": [13],
+          "visible": true,
+          "sType": "string"
+        },
+        {
+          "targets": [14],
+          "visible": false,
+          "sType": "string"
+        },
+        {
+          "targets": [15],
+          "visible": true,
+          "sType": "num"
+        },
+        {
+          "targets": [16],
+          "visible": true,
+          "sType": "num"
+        },
+        {
+          "targets": [17],
+          "visible": false,
+          "sType": "string"
+        },
+        {
+          "targets": [18],
+          "visible": false,
+          "sType": "string"
+        },
+        {
+          "targets": [19],
+          "visible": false,
+          "sType": "string"
+        },
+        {
+          "targets": [20],
+          "visible": false,
+          "sType": "string"
+        },
+        {
+          "targets": [21],
+          "visible": false,
+          "sType": "num"
+        },
+        {
+          "targets": [22],
+          "visible": false,
+          "sType": "string"
+        },
+        {
+          "targets": [23],
+          "visible": false,
+          "sType": "string"
+        },
+        {
+          "targets": [24],
+          "visible": false,
+          "sType": "string"
+        },
+    ],
+    "fnInitComplete": function() {
+      // Focus the input field
+      $("#host_overview_tbl_filter input").focus();
+
+      // Set the search box value to the query string 'search' part
+      var qp = getQueryParams(document.location.search);
+      if ("search" in qp) {
+        $("#host_overview_tbl_filter input").val(qp.search);
+        this.fnFilter(qp.search);
+      }
+    }
+  });
+
+  // Display or hide columns based on localStorage preferences.
+  for (var columnId in columnVisibility) {
+    var columnButton = $("a[data-column-id='" + columnId +"']");
+    var columnNr = columnButton.attr('data-column');
+    var column = table.column(columnNr);
+    column.visible(columnVisibility[columnId]);
+    var newClass = ['col-invisible','col-visible'][Number(column.visible())];
+    columnButton.get(0).className = 'col-toggle ' + newClass;
+  }
+
+  // Show a direct link to the search term
+  table.on( 'search.dt', function () {
+    $('#filter_link').remove();
+    if (table.search() == "") {
+    } else {
+      $('#host_overview_tbl_filter label').after('<span id="filter_link">&nbsp; <a title="Direct link to search" href="?search='+table.search()+'">&nbsp;</a></span>');
+    }
+  } );
+
+  // Show and hide columns on button clicks
+  $('a.col-toggle').on('click', function(e) {
+    e.preventDefault();
+    var columnId = $(this).attr('data-column-id')
+    var column = table.column( $(this).attr('data-column') );
+    column.visible( ! column.visible() );
+    var newClass = ['col-invisible','col-visible'][Number(column.visible())];
+    e.target.className = 'col-toggle ' + newClass;
+
+    // Storage column visibility in localStorage.
+    columnVisibility[columnId] = column.visible();
+    localStorage.setItem("columnVisibility", JSON.stringify(columnVisibility));
+  });
+
+  // Open the Detailed host information when jumping to a host.
+  $('#host_overview td a').on('click', function(e) {
+    var hostId=$(this).attr('href').substr(1);
+    var hostElem = $("h3[data-host-name='"+hostId+"']");
+    hostElem.addClass('uncollapsed');
+    hostElem.removeClass('collapsed');
+    hostElem.next().removeClass('collapsed');
+  });
+
+  
+  // Open the detailed host information when clicking on the hosts header
+  $('.toggle-collapse').on('click', function(e) {
+    $(this).toggleClass('collapsed');
+    $(this).toggleClass('uncollapsed');
+    $(this).next().toggleClass('collapsed');
+  });
+
+  // Toggle opening and closing all information for a host.
+  $('a.toggle-all').on('click', function(e) {
+    e.preventDefault();
+    if ($(this).text() == "Open all") {
+      $(this).siblings('.collapsed').each(function(item) {
+        $(this).addClass('uncollapsed');
+        $(this).removeClass('collapsed');
+        $(this).next().toggleClass('collapsed');
+      });
+      $(this).text("Close all");
+    } else {
+      $(this).text("Open all");
+      $(this).siblings('.uncollapsed').each(function(item) {
+        $(this).addClass('collapsed');
+        $(this).removeClass('uncollapsed');
+        $(this).next().toggleClass('collapsed');
+      });
+    }
+  });
+
+
+  // Show host name in header bar when scrolling
+  $( window ).scroll(function() {
+    var scrollTop = $(window).scrollTop();
+    var curElem = false;
+    $( "#hosts h3" ).each(function( index ) {
+      var el = $(this);
+      if ((el.offset().top - 128) <= scrollTop) {
+        curElem = el;
+      } else {
+        return false;
+      }
+    });
+    if (curElem) {
+      $("header h1").text(curElem.text());
+      $('#top').show();
+    } else {
+      $("header h1").text("Host Overview");
+      $('#top').hide();
+    };
+  });
+});
+</script>
+
+
+  </body>
+  </html>
+

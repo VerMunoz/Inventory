@@ -1,0 +1,14 @@
+---
+- hosts: all 
+  tasks: 
+  - name: Run script 
+    script: /home/vmunoz/ansible/inventory.ksh
+    register: output
+  - debug: var=output.stdout_lines
+  - local_action: copy content={{output.stdout_lines | to_nice_json}} dest="/home/vmunoz/ansible/{{ inventory_hostname}}.json"
+  - name: Ansible replace string example
+    replace:
+      path: /home/vmunoz/ansible/{{ inventory_hostname}}.json
+      regexp: '\\'
+      replace: ""
+    delegate_to: localhost

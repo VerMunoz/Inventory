@@ -109,37 +109,49 @@ function GatherInformation {
 		      
 	# PRINT RESULTS
 
-		printf "======= INVENTARIO DE INFRAESTRUCTURA =======\n"
-		printf "OPERATING SYSTEM\n  Plataform: $PLATFORM\n  Kernel: $OS_LEVEL\n  OS Model: $OS_MODEL\n\n"
-		printf "HARDWARE\n  Hostname: $HOSTNAME\n  System Model: $SYSTEM_MODEL\n  Proccesor Type: $PROCESSOR_TYPE\n  Proccessors:$PROCESSORS\n  Clock: $CLOCK MHz\n  Memory total: $MEMORY GB\n  Memory used: $MEMORY_USED\n  Memory available: $MEMORY_AVAILABLE\n  Swap total: $SWAP \n  Swap free: $SWAP_FREE\n\n"
-		printf "STORAGE\n "
+		#printf "======= INVENTARIO DE INFRAESTRUCTURA =======\n"
+	        printf "{\"OPERATING SYSTEM\":{\"Plataform\":\"$PLATFORM\",\"Kernel\":\"$OS_LEVEL\",\"OS Model\":\"$OS_MODEL\"},\"HARDWARE\": {\"Hostname\":\"$HOSTNAME\",\"System Model\":\"$SYSTEM_MODEL\",\"Procesor Type\":\"$PROCESSOR_TYPE\",\"Processors\":\"$PROCESSORS\",\"Clock\":\"$CLOCK MHz\",\"Memory total\":\"$MEMORY GB\",\"Memory used\":\"$MEMORY_USED\",\"Memory available\":\"$MEMORY_AVAILABLE\",\"Swap total\":\"$SWAP\",\"Swap free\":\"$SWAP_FREE\"},\"STORAGE\":{\"Mounts\":{ "
 
-	# STORAGE 
-	    DEVICES=$(df -h -x tmpfs | grep /dev/ | awk '{print $1}')
-		for i in $DEVICES; do
-			printf "\t$i\n"
-			SIZE=$(df -h -x tmpfs | grep $i | awk '{print "Size:" $2 "GB"}')
-			USED=$(df -h -x tmpfs | grep $i | awk '{print "Used:" $3 "GB"}')
-			USE=$(df -h -x tmpfs | grep $i | awk '{print "Porcentaje de uso:" $5}' | sed s/\%//g )
-			MOUNT=$(df -h -x tmpfs | grep $i | awk '{print "Mount:" $6}')
-			printf "\t\t$SIZE\n\t\t$USED\n\t\t$USE\n\t\t$MOUNT\n\n"
-		done
-
-		
-		printf "NETWORK\n  Interfaces:\n"
+	# STORAGE
+                 DEVICES=$(df -h -x tmpfs | grep /dev/ | awk '{print $1}')
+                 LONG_DEVICES=$(df -h -x tmpfs | grep /dev/ | awk '{print $1}' | wc -l)
+                 COUNTER_DEVICES=0 
+                 for i in $DEVICES; do
+                         COUNTER_DEVICES=$((COUNTER_DEVICES+1))
+                         printf "\"$i\":{"
+                         SIZE=$(df -h -x tmpfs | grep $i | awk '{print $2 "GB"}')
+                         USED=$(df -h -x tmpfs | grep $i | awk '{print $3 "GB"}')
+                         USE=$(df -h -x tmpfs | grep $i | awk '{print  $5}' | sed s/\%//g )
+                         MOUNT=$(df -h -x tmpfs | grep $i | awk '{print "Mount:" $6}')
+                         if [ "$COUNTER_DEVICES" == "$LONG_DEVICES" ]; then
+                           printf "\"Size\":\"$SIZE\",\"Used\":\"$USED\",\"Usage percentage\":\"$USE\", \"Mount\":\"$MOUNT\"}"
+                         else
+                           printf "\"Size\":\"$SIZE\",\"Used\":\"$USED\",\"Usage percentage\":\"$USE\", \"Mount\":\"$MOUNT\"},"
+                         fi
+                 done
+	
+		 printf "}},\"NETWORK\":{\"Interfaces\":{"
 	# NETWORK SETTINGS
-		INTERFACES=$(ifconfig -s | awk '{print $1}'| sed '1d')
-		for i in $INTERFACES; do
-			printf "\t$i\n"
-			IPv6=$(ifconfig -v $i | grep -e 'inet6' | awk '{print "IP_'$i'= "  $2}')
-			NETMASKv6=$(ifconfig -v $i | grep -e 'inet6' | awk '{print "NETMASK_'$i'= "  $4}')
-			BROADCASTv6=$(ifconfig -v $i | grep -e 'inet6' | awk '{print "BROADCATS_'$i'= " $ 6}')
-			IPv4=$(ifconfig -v $i | grep -e 'inet ' | awk '{print "IP_'$i'= "  $2}')
-			NETMASKv4=$(ifconfig -v $i | grep -e 'inet ' | awk '{print "NETMASK_'$i'= " $4}')
-			BROADCASTv4=$(ifconfig -v $i | grep -e 'inet ' | awk '{print "BROADCATS_'$i'= "  $6}')
-			ETHER=$(ifconfig -v $i | grep -e 'ether ' | awk '{print "ETHER_'$i'= " $2}')
-			printf "\t\t* Versión 4\n\t\t$IPv4\n\t\t$NETMASKv4\n\t\t$BROADCASTv4\n\t\t* Versión 6\n\t\t$IPv6\n\t\t$NETMASKv6\n\t\t$BROADCASTv6\n\t\t* ETHERTNET\n\t\t$ETHER\n\n"
-		done
+		 INTERFACES=$(ifconfig -a | sed 's/[ \t].*//;/^$/d' | sed 's/://g')
+	         LONG_INTERFACES=$(ifconfig -a | sed 's/[ \t].*//;/^$/d' | sed 's/://g'| wc -l)
+		 for i in $INTERFACES; do
+		         COUNTER_INTERFACES=$((COUNTER_INTERFACES+1))
+			 printf "\"$i\":{"
+			 IPv6=$(ifconfig -v $i | grep -e 'inet6' | awk '{print $2}')
+			 NETMASKv6=$(ifconfig -v $i | grep -e 'inet6' | awk '{print $4}')
+			 BROADCASTv6=$(ifconfig -v $i | grep -e 'inet6' | awk '{print $6}')
+			 IPv4=$(ifconfig -v $i | grep -e 'inet ' | awk '{print $2}')
+			 NETMASKv4=$(ifconfig -v $i | grep -e 'inet ' | awk '{print $4}')
+			 BROADCASTv4=$(ifconfig -v $i | grep -e 'inet ' | awk '{print $6}')
+			 ETHER=$(ifconfig -v $i | grep -e 'ether ' | awk '{print $2}')
+			 if [ "$COUNTER_INTERFACES" == "$LONG_INTERFACES" ]; then
+                           printf "\"Versión 4\":{\"IP\":\"$IPv4\",\"Netmask\":\"$NETMASKv4\",\"Broadcast\":\"$BROADCASTv4\"},\"Versión 6\":{\"IPv6\":\"$IPv6\",\"Netmaskv6\":\"$NETMASKv6\",\"Broadcastv6\":\"$BROADCASTv6\"},\"ETHERTNET\":{\"Ethernet\":\"$ETHER\"}}"
+                         else
+		           printf "\"Versión 4\":{ \"IP\":\"$IPv4\",\"Netmask\":\"$NETMASKv4\",\"Broadcast\":\"$BROADCASTv4\"},\"Versión 6\":{\"IPv6\":\"$IPv6\",\"Netmaskv6\":\"$NETMASKv6\",\"Broadcastv6\":\"$BROADCASTv6\"},\"ETHERTNET\":{\"Ethernet\":\"$ETHER\"}},"
+			 fi
+ 		 
+		 done
+		 printf "}}}"
 	;;
 	
 	(SunOS)
